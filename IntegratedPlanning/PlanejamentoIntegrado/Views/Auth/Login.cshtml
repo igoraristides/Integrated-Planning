@@ -1,0 +1,41 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+    ViewData["Title"] = "Login";
+}
+
+@if (TempData["LoginError"] != null)
+{
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
+        <div class="toast align-items-center text-white bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fa fa-exclamation-triangle me-2"></i>
+                    @TempData["LoginError"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+}
+
+<form asp-controller="Auth" asp-action="Login" method="post" data-parsley-validate="true">
+    <div class="form-floating mb-20px">
+        <input type="text" class="form-control fs-13px h-45px" id="login" name="login" placeholder="Login" data-parsley-required="true" />
+        <label for="login" class="d-flex align-items-center py-0">Login</label>
+    </div>
+    <div class="form-floating mb-20px">
+        <input type="password" class="form-control fs-13px h-45px" id="password" name="password" placeholder="Senha" data-parsley-required="true" />
+        <label for="password" class="d-flex align-items-center py-0">Senha</label>
+    </div>
+    <div class="login-buttons">
+        <button type="submit" class="btn h-45px btn-primary d-block w-100 btn-lg">Login</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+    <script src="~/assets/plugins/parsleyjs/dist/i18n/pt-br.js"></script>
+    <script>
+        Parsley.setLocale('pt-br');
+    </script>
+}

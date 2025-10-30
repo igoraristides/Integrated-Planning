@@ -1,0 +1,393 @@
+@{
+    ViewData["Title"] = "Detalhes da Peça - Compara Variação";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var pecaNome = ViewBag.PecaNome ?? "Peça não encontrada";
+    var chartData = ViewBag.ChartData as List<PlanejamentoIntegrado.Models.ChartDataPoint> ?? new List<PlanejamentoIntegrado.Models.ChartDataPoint>();
+    var quantityMatrix = ViewBag.QuantityMatrix as List<PlanejamentoIntegrado.Models.MatrixRow> ?? new List<PlanejamentoIntegrado.Models.MatrixRow>();
+    var valueMatrix = ViewBag.ValueMatrix as List<PlanejamentoIntegrado.Models.MatrixRow> ?? new List<PlanejamentoIntegrado.Models.MatrixRow>();
+    var currentWeek = ViewBag.CurrentWeek as string ?? "";
+}
+
+<ol class="breadcrumb float-xl-end">
+    <li class="breadcrumb-item"><a asp-controller="CompareVariation" asp-action="Index">Compara Variação</a></li>
+    <li class="breadcrumb-item active">Detalhes</li>
+</ol>
+
+<h1 class="page-header">
+    <span class="fas fa-desktop"></span>&nbsp;&nbsp;Flutuação de Demanda da Peça @pecaNome
+</h1>
+
+<!-- BEGIN row -->
+<div class="row">				
+    
+    <!-- BEGIN col-12 -->
+    <div class="col-lg-12">
+    
+        <!-- BEGIN panel -->
+        <div class="panel panel-inverse">
+            <!-- BEGIN panel-heading -->
+            <div class="panel-heading">
+                <h4 class="panel-title">Gráfico</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                </div>					
+            </div>
+            <!-- END panel-heading -->						
+            
+            <!-- BEGIN panel-body -->
+            <div class="panel-body">
+                <h4 class="text-center">Demanda de Peças x Período</h4>
+                
+                <div class="panel-body p-0 pe-10px">
+                    <div id="apex-area-chart"></div>
+                </div>													
+                
+            </div>
+            <!-- END panel-body -->
+            
+        </div>
+        <!-- END panel -->
+    <!-- END col-12 -->
+    </div>
+    
+    <!-- BEGIN col-12 -->
+    <div class="col-lg-12">	
+        
+        <!-- BEGIN panel -->
+        <div class="panel panel-inverse">
+            <!-- BEGIN panel-heading -->
+            <div class="panel-heading">
+                <h4 class="panel-title">Matriz de Quantidades</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                </div>					
+            </div>
+            <!-- END panel-heading -->						
+            
+            <!-- BEGIN panel-body -->
+            <div class="panel-body">
+                                    
+                <table id="data-table-buttons" width="100%" class="table table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th width="15%" class="text-nowrap">Nome da Origem</th>
+                            @if (quantityMatrix != null && quantityMatrix.Any() && quantityMatrix.First().WeekValues != null)
+                            {
+                                @foreach (var week in quantityMatrix.First().WeekValues.Keys.OrderBy(w => w))
+                                {
+                                    var isCurrentWeek = week == currentWeek;
+                                    var headerClass = isCurrentWeek ? "table-warning" : "";
+                                    <th width="10%" class="text-nowrap text-center @headerClass" title="@(isCurrentWeek ? "Semana Atual" : "")">@week</th>
+                                }
+                            }
+                            <th width="10%" class="text-nowrap text-center">Total</th>
+                            <th width="10%" class="text-nowrap text-center">CV</th>
+                            <th width="10%" class="text-nowrap text-center">CLCV</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (quantityMatrix != null && quantityMatrix.Any())
+                        {
+                            var quantityWeekHeaders = quantityMatrix.First().WeekValues?.Keys.OrderBy(w => w).ToList() ?? new List<string>();
+                            Dictionary<string, decimal?> previousRowValues = null;
+                            decimal? previousTotal = null;
+                            
+                            foreach (var row in quantityMatrix)
+                            {
+                                <tr>										
+                                    <td>@row.OriginName</td>
+                                    @{
+                                        foreach (var week in quantityWeekHeaders)
+                                        {
+                                            var value = row.WeekValues?.ContainsKey(week) == true ? row.WeekValues[week] : null;
+                                            var cellClass = "text-center";
+                                            
+                                            if (week == currentWeek)
+                                            {
+                                                cellClass += " table-warning";
+                                            }
+                                            else if (previousRowValues != null && value.HasValue && previousRowValues.ContainsKey(week) && previousRowValues[week].HasValue)
+                                            {
+                                                var previousValue = previousRowValues[week].Value;
+                                                
+                                                if (value < previousValue)
+                                                {
+                                                    cellClass += " table-danger";
+                                                }
+                                                else if (value > previousValue)
+                                                {
+                                                    cellClass += " table-info";
+                                                }
+                                            }
+                                            
+                                            <td class="@cellClass">@(value.HasValue ? value.Value.ToString("N0") : "-")</td>
+                                        }
+                                        
+                                        var totalClass = "text-center";
+                                        if (previousTotal.HasValue && row.Total.HasValue)
+                                        {
+                                            if (row.Total.Value > previousTotal.Value)
+                                            {
+                                                totalClass += " table-danger";
+                                            }
+                                            else if (row.Total.Value < previousTotal.Value)
+                                            {
+                                                totalClass += " table-info";
+                                            }
+                                        }
+                                    }
+                                    <td class="@totalClass"><strong>@(row.Total?.ToString("N0") ?? "-")</strong></td>
+                                    <td class="text-center"><strong>@(row.CV?.ToString("N1") ?? "-")</strong></td>
+                                    <td class="text-center"><strong class="@(row.CLCV == "H" ? "text-danger" : "")">@(row.CLCV ?? "-")</strong></td>
+                                </tr>
+                                previousRowValues = row.WeekValues?.ToDictionary(kv => kv.Key, kv => kv.Value);
+                                previousTotal = row.Total;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center">Nenhum registro encontrado</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- END panel-body -->
+        </div>
+        <!-- END panel -->				
+        
+        <!-- END row -->				
+    </div>
+    
+    <!-- BEGIN col-12 -->
+    <div class="col-lg-12">	
+        
+        <!-- BEGIN panel -->
+        <div class="panel panel-inverse">
+            <!-- BEGIN panel-heading -->
+            <div class="panel-heading">
+                <h4 class="panel-title">Matriz de Valores</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                </div>					
+            </div>
+            <!-- END panel-heading -->						
+            
+            <!-- BEGIN panel-body -->
+            <div class="panel-body">
+                                    
+                <table id="data-table-buttons2" width="100%" class="table table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th width="15%" class="text-nowrap">Nome da Origem</th>
+                            @if (valueMatrix != null && valueMatrix.Any() && valueMatrix.First().WeekValues != null)
+                            {
+                                @foreach (var week in valueMatrix.First().WeekValues.Keys.OrderBy(w => w))
+                                {
+                                    var isCurrentWeek = week == currentWeek;
+                                    var headerClass = isCurrentWeek ? "table-warning" : "";
+                                    <th width="10%" class="text-nowrap text-center @headerClass" title="@(isCurrentWeek ? "Semana Atual" : "")">@week</th>
+                                }
+                            }
+                            <th width="10%" class="text-nowrap text-center">Total</th>
+                            <th width="10%" class="text-nowrap text-center">CV</th>
+                            <th width="10%" class="text-nowrap text-center">CLCV</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (valueMatrix != null && valueMatrix.Any())
+                        {
+                            var valueWeekHeaders = valueMatrix.First().WeekValues?.Keys.OrderBy(w => w).ToList() ?? new List<string>();
+                            Dictionary<string, decimal?> previousRowValues = null;
+                            decimal? previousTotal = null;
+                            
+                            foreach (var row in valueMatrix)
+                            {
+                                <tr>										
+                                    <td>@row.OriginName</td>
+                                    @{
+                                        foreach (var week in valueWeekHeaders)
+                                        {
+                                            var value = row.WeekValues?.ContainsKey(week) == true ? row.WeekValues[week] : null;
+                                            var cellClass = "text-center";
+                                            
+                                            if (week == currentWeek)
+                                            {
+                                                cellClass += " table-warning";
+                                            }
+                                            else if (previousRowValues != null && value.HasValue && previousRowValues.ContainsKey(week) && previousRowValues[week].HasValue)
+                                            {
+                                                var previousValue = previousRowValues[week].Value;
+                                                
+                                                if (value < previousValue)
+                                                {
+                                                    cellClass += " table-danger";
+                                                }
+                                                else if (value > previousValue)
+                                                {
+                                                    cellClass += " table-info";
+                                                }
+                                            }
+                                            
+                                            <td class="@cellClass">@(value.HasValue ? value.Value.ToString("N2") : "-")</td>
+                                        }
+                                        
+                                        var totalClass = "text-center";
+                                        if (previousTotal.HasValue && row.Total.HasValue)
+                                        {
+                                            if (row.Total.Value > previousTotal.Value)
+                                            {
+                                                totalClass += " table-danger";
+                                            }
+                                            else if (row.Total.Value < previousTotal.Value)
+                                            {
+                                                totalClass += " table-info";
+                                            }
+                                        }
+                                    }
+                                    <td class="@totalClass"><strong>@(row.Total?.ToString("N2") ?? "-")</strong></td>
+                                    <td class="text-center"><strong>@(row.CV?.ToString("N1") ?? "-")</strong></td>
+                                    <td class="text-center"><strong class="@(row.CLCV == "H" ? "text-danger" : "")">@(row.CLCV ?? "-")</strong></td>
+                                </tr>
+                                previousRowValues = row.WeekValues?.ToDictionary(kv => kv.Key, kv => kv.Value);
+                                previousTotal = row.Total;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center">Nenhum registro encontrado</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- END panel-body -->
+        </div>
+        <!-- END panel -->				
+        
+        <!-- END row -->				
+    </div>
+    
+    <div class="col-lg-12 text-center mb-3">
+        <a asp-action="Index" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+<!-- END row -->
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#data-table-buttons').DataTable({
+                responsive: false,
+                paging: false,
+                info: false,
+                searching: false,
+                ordering: false,
+                autoWidth: false,
+                scrollX: true,
+                dom: '<"row mb-3"<"col-md-6"B><"col-md-6"fr>>t<"row mt-3"<"col-md-auto me-md-auto"i><"col-md-auto ms-md-auto"p>>',
+                buttons: [
+                    { extend: 'copy', className: 'btn-sm' },
+                    { extend: 'csv', className: 'btn-sm' },
+                    { extend: 'excel', className: 'btn-sm' },
+                    { extend: 'pdf', className: 'btn-sm' },
+                    { extend: 'print', className: 'btn-sm' }
+                ],
+                language: {
+                    url: '/assets/data/datatables-pt-BR.json',
+                    emptyTable: 'Nenhum dado disponível'
+                },
+                columnDefs: [
+                    {
+                        targets: '_all',
+                        render: function(data, type, row, meta) {
+                            if (data === null || data === undefined || data === '') {
+                                return '';
+                            }
+                            return data;
+                        }
+                    }
+                ]
+            });
+            
+            $('#data-table-buttons2').DataTable({
+                responsive: false,
+                paging: false,
+                info: false,
+                searching: false,
+                ordering: false,
+                autoWidth: false,
+                scrollX: true,
+                dom: '<"row mb-3"<"col-md-6"B><"col-md-6"fr>>t<"row mt-3"<"col-md-auto me-md-auto"i><"col-md-auto ms-md-auto"p>>',
+                buttons: [
+                    { extend: 'copy', className: 'btn-sm' },
+                    { extend: 'csv', className: 'btn-sm' },
+                    { extend: 'excel', className: 'btn-sm' },
+                    { extend: 'pdf', className: 'btn-sm' },
+                    { extend: 'print', className: 'btn-sm' }
+                ],
+                language: {
+                    url: '/assets/data/datatables-pt-BR.json',
+                    emptyTable: 'Nenhum dado disponível'
+                },
+                columnDefs: [
+                    {
+                        targets: '_all',
+                        render: function(data, type, row, meta) {
+                            if (data === null || data === undefined || data === '') {
+                                return '';
+                            }
+                            return data;
+                        }
+                    }
+                ]
+            });
+            
+            var chartDataFromServer = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(chartData));
+            
+            console.log('Chart Data:', chartDataFromServer);
+            
+            if (chartDataFromServer && chartDataFromServer.length > 0) {
+                var chartQuantities = chartDataFromServer.map(function(item) { return item.Quantity || item.quantity; });
+                var chartDates = chartDataFromServer.map(function(item) { return item.Date || item.date; });
+                
+                var options = {
+                    chart: { height: 342, type: 'area' },
+                    dataLabels: { enabled: false },
+                    stroke: { curve: 'smooth', width: 3 },
+                    colors: ['#348fe2'],
+                    series: [
+                        { name: 'Quantidade', data: chartQuantities }
+                    ],
+                    xaxis: {
+                        type: 'category',
+                        categories: chartDates
+                    },
+                    tooltip: { 
+                        y: {
+                            formatter: function(value) {
+                                return value.toFixed(0);
+                            }
+                        }
+                    }
+                };
+                
+                var chart = new ApexCharts(
+                    document.querySelector('#apex-area-chart'),
+                    options
+                );
+                
+                chart.render();
+            } else {
+                console.warn('Nenhum dado disponível para o gráfico');
+                document.querySelector('#apex-area-chart').innerHTML = '<div class="alert alert-warning text-center">Nenhum dado disponível para exibir no gráfico</div>';
+            }
+        });
+    </script>
+}
+

@@ -1,0 +1,59 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Planejamento Integrado - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <link href="~/assets/css/vendor.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/assets/css/default/app.min.css" rel="stylesheet" asp-append-version="true" />
+    <link rel="icon" href="~/content/logos/metalsa.ico" type="image/x-icon" />
+</head>
+<body class="pace-top">
+    <div id="app" class="app">
+        @if (TempData["GlobalError"] != null)
+        {
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
+                <div class="toast align-items-center text-white bg-danger border-0 show" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fa fa-exclamation-triangle me-2"></i>
+                            @TempData["GlobalError"]
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="login login-v1">
+            <div class="login-container">
+                <div class="login-header">
+                    <div class="brand">
+                        <div class="d-flex align-items-center">
+                            <h2><b>Planejamento Integrado</b></h2>
+                        </div>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-lock"></i>
+                    </div>
+                </div>
+                <div class="login-body">
+                    <div class="login-content fs-13px">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/assets/js/vendor.min.js" asp-append-version="true"></script>
+    <script src="~/assets/js/app.min.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

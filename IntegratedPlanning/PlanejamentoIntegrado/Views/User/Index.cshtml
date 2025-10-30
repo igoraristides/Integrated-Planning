@@ -1,0 +1,88 @@
+﻿@using PlanejamentoIntegrado.Enums
+@model List<PlanejamentoIntegrado.Models.UserViewModel>
+
+@{
+    ViewData["Title"] = "Usuários";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<ol class="breadcrumb float-xl-end">
+    <li class="breadcrumb-item"><a asp-controller="CompareVariation" asp-action="Index">Início</a></li>
+    <li class="breadcrumb-item active">Cadastro de Usuários</li>
+</ol>
+
+<h1 class="page-header">
+    <span class="fas fa-user"></span>&nbsp;&nbsp;Cadastro de Usuários
+</h1>
+
+<div class="panel panel-inverse">
+    <div class="panel-heading d-flex justify-content-between align-items-center">
+        <div>
+            <a asp-action="New" class="btn btn-white btn-rounded btn-condensed btn-sm">
+                Cadastrar Novo Usuário
+            </a>
+        </div>
+        <div class="panel-heading-btn">
+            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand">
+                <i class="fa fa-expand"></i>
+            </a>
+        </div>
+    </div>
+
+
+    <div class="panel-body">
+        <h3 class="text-center">Lista de Usuários</h3>
+        <table id="data-table-default" class="table table-striped table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th class="text-nowrap">Nome do Usuário</th>
+                    <th class="text-nowrap">Acessos</th>
+                    <th class="text-nowrap text-center">Ativo</th>
+                    <th class="text-nowrap text-center">Alterar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.Name</td>
+                        <td>@(user.ProfileId == SharedEnums.UserProfile.Admin ? "ADMINISTRADOR" : "VISUALIZADOR")</td>
+
+                        <td class="text-center">
+                            @if (user.IsActive.HasValue && user.IsActive.Value == true)
+                            {
+                                <span class="fas fa-check text-success"></span>
+                            }
+                            else
+                            {
+                                <span class="fas fa-times text-danger"></span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@user.Id">
+                                <button type="button" class="btn btn-white btn-rounded btn-condensed btn-sm">
+                                    <span class="text-info fa fa-pencil"></span>
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#data-table-default').DataTable({
+                responsive: true,
+                paging: true,
+                info: false,
+                language: {
+                    url: '/assets/data/datatables-pt-BR.json'
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,81 @@
+## ---- .NET / C# ----
+# Build results
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+[Tt]emp/
+*.user
+*.rsuser
+*.suo
+*.cache
+*.dbmdl
+*.bak
+*.log
+*.tlog
+*.vspscc
+*.vssscc
+
+# Auto-generated files
+Generated/
+wwwroot/lib/
+wwwroot/dist/
+wwwroot/node_modules/
+
+# ASP.NET temporary files
+App_Data/
+App_LocalResources/
+App_GlobalResources/
+_ReSharper*/
+_ReSharper.Caches/
+*.DotSettings.user
+
+## ---- Razor / Frontend ----
+# Frontend packages and builds
+node_modules/
+dist/
+build/
+.vscode/
+.vs/
+
+# IDE config
+.idea/
+*.code-workspace
+.vscode/*
+
+# CSS preprocessors / minifiers
+*.min.css
+*.min.js
+*.map
+
+## ---- Environment / Secrets ----
+# User-specific files
+*.env
+*.env.local
+*.secret.json
+appsettings.*.json
+
+# Don’t ignore the default config
+!appsettings.json
+
+## ---- OS & misc ----
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+# Linux
+*~
+
+## ---- NuGet ----
+# Packages folder can be restored from .nupkg
+*.nupkg
+packages/
+
+## ---- Logs / Coverage ----
+*.log
+coverage/
+TestResults/
+*.coverage
+*.coveragexml

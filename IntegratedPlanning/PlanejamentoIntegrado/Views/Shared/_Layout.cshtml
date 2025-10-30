@@ -1,0 +1,191 @@
+﻿@using System.Security.Claims
+@using PlanejamentoIntegrado.Constants
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, PlanejamentoIntegrado
+
+@{
+    Layout = null;
+    var title = ViewData["Title"] ?? "Planejamento Integrado";
+    var profileId = User.FindFirst(ClaimTypes.Role)?.Value;
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <title>@title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="~/assets/css/vendor.min.css" rel="stylesheet" />
+    <link href="~/assets/css/default/app.min.css" rel="stylesheet" />
+    <link href="~/assets/plugins/nvd3/build/nv.d3.css" rel="stylesheet" />
+    <link href="~/assets/plugins/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/assets/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.css" rel="stylesheet" />
+    <link href="~/assets/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" />
+    <link href="~/assets/plugins/ion-rangeslider/css/ion.rangeSlider.min.css" rel="stylesheet" />
+    <link href="~/assets/plugins/tag-it/css/jquery.tagit.css" rel="stylesheet" />
+    <link href="~/assets/plugins/spectrum-colorpicker2/dist/spectrum.min.css" rel="stylesheet" />
+    <link href="~/assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <link href="~/assets/plugins/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    <link href="~/assets/plugins/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" />
+    <link href="~/assets/plugins/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+    <link rel="icon" href="~/content/logos/metalsa.ico" type="image/x-icon" />
+    
+    <style>
+        .app-sidebar {
+            position: fixed !important;
+            padding-top: 0 !important;
+        }
+        
+        #data-table-buttons_processing {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="pace-top">
+    <div id="loader" class="app-loader"><span class="spinner"></span></div>
+
+    <div id="app" class="app">
+        @if (TempData["GlobalError"] != null)
+        {
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
+                <div class="toast align-items-center text-white bg-danger border-0 show" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fa fa-exclamation-triangle me-2"></i>
+                            @TempData["GlobalError"]
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
+                <div class="toast align-items-center text-white bg-success border-0 show" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fa fa-check-circle me-2"></i>
+                            @TempData["Success"]
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
+                <div class="toast align-items-center text-white bg-danger border-0 show" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fa fa-exclamation-triangle me-2"></i>
+                            @TempData["Error"]
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div id="sidebar" class="app-sidebar" data-bs-theme="dark">
+            <div class="app-sidebar-content" data-scrollbar="true" data-height="100%" style="display: flex; flex-direction: column; height: 100%;">
+                <div class="menu">
+                    <div class="menu-header">Navegação</div>
+
+                    <li asp-controller="CompareVariation" class="menu-item">
+                        <a asp-action="Index" asp-controller="CompareVariation" class="menu-link">
+                            <div class="menu-icon"><i class="fas fa-chart-line"></i></div>
+                            <div class="menu-text">Compara Variação</div>
+                        </a>
+                    </li>
+
+                    <li asp-controller="Stock" class="menu-item">
+                        <a asp-action="Index" asp-controller="Stock" class="menu-link">
+                            <div class="menu-icon"><i class="fas fa-boxes"></i></div>
+                            <div class="menu-text">Estoque</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item has-sub">
+                        <a href="javascript:;" class="menu-link">
+                            <div class="menu-icon"><i class="fas fa-lock"></i></div>
+                            <div class="menu-text">Segurança</div>
+                            <div class="menu-caret"></div>
+                        </a>
+                        <div class="menu-submenu">
+                            @if (profileId == RoleNames.Admin)
+                            {
+                                <div class="menu-item">
+                                    <a asp-controller="User" asp-action="Index" class="menu-link">
+                                        <div class="menu-text">Usuários</div>
+                                    </a>
+                                </div>
+                            }
+                            <div class="menu-item">
+                                <a asp-controller="User" asp-action="ChangePassword" class="menu-link">
+                                    <div class="menu-text">Alterar Senha</div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </div>
+
+                <div class="menu" style="margin-top: auto;">
+                    <li class="menu-item">
+                        <a href="javascript:;" class="menu-link" onclick="document.getElementById('logoutForm').submit();">
+                            <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
+                            <div class="menu-text">Sair</div>
+                        </a>
+                    </li>
+                </div>
+            </div>
+
+            <form id="logoutForm" asp-controller="Auth" asp-action="Logout" method="post" style="display:none;">
+                @Html.AntiForgeryToken()
+            </form>
+        </div>
+        <div class="app-sidebar-bg"></div>
+        <div class="app-sidebar-mobile-backdrop">
+            <a href="#" data-dismiss="app-sidebar-mobile" class="stretched-link"></a>
+        </div>
+
+        <div id="content" class="app-content">
+            @RenderBody()
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="~/assets/js/vendor.min.js"></script>
+    <script src="~/assets/js/app.min.js"></script>
+    <script src="~/assets/plugins/moment/min/moment.min.js"></script>
+    <script src="~/assets/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+    <script src="~/assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+    <script src="~/assets/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
+    <script src="~/assets/plugins/ion-rangeslider/js/ion.rangeSlider.min.js"></script>
+    <script src="~/assets/plugins/jquery.maskedinput/src/jquery.maskedinput.js"></script>
+    <script src="~/assets/plugins/tag-it/js/tag-it.min.js"></script>
+    <script src="~/assets/plugins/clipboard/dist/clipboard.min.js"></script>
+    <script src="~/assets/plugins/spectrum-colorpicker2/dist/spectrum.min.js"></script>
+    <script src="~/assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="~/assets/plugins/datatables.net/js/dataTables.js"></script>
+    <script src="~/assets/plugins/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/assets/plugins/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/assets/plugins/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
+    <script src="~/assets/plugins/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/assets/plugins/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
+    <script src="~/assets/plugins/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/assets/plugins/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/assets/plugins/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/assets/plugins/pdfmake/build/pdfmake.min.js"></script>
+    <script src="~/assets/plugins/pdfmake/build/vfs_fonts.js"></script>
+    <script src="~/assets/plugins/jszip/dist/jszip.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
