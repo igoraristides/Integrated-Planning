@@ -67,8 +67,7 @@
                     <div class="row mb-15px">									
                         <div class="col-md-6">
                             <label class="form-label" for="ModelId">MODELO</label>
-                            <select class="default-select2 form-control" id="ModelId" name="ModelId">
-                                <option value="">SELECIONE</option>
+                            <select class="default-select2 form-control" id="ModelId" name="ModelIds" multiple="multiple" data-placeholder="SELECIONE">
                                 @if (ViewBag.Models != null)
                                 {
                                     foreach (var modelItem in ViewBag.Models)
@@ -208,7 +207,7 @@
             function getFilters() {
                 var filters = {
                     supplierCode: $('#SupplierCode').val() || null,
-                    modelId: $('#ModelId').val() || null,
+                    modelIds: $('#ModelId').val() || [],
                     partId: $('#PartId').val() || null,
                     startDate: $('#StartDate').val() || null,
                     endDate: $('#EndDate').val() || null,
@@ -219,42 +218,64 @@
                 console.log('getFilters() retornou:', filters);
                 return filters;
             }
-            
+
+            var shouldLoadData = false;
+            var emptyStateMessage = 'Nenhum dado disponível. Utilize os filtros para iniciar a busca.';
+
             var table = $('#data-table-buttons').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: {
-                    url: '/CompareVariation/GetData',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: function (d) {
-                        var filters = getFilters();
-                        return JSON.stringify({
+                ajax: function (d, callback) {
+                    if (!shouldLoadData) {
+                        callback({
+                            draw: d.draw,
+                            recordsTotal: 0,
+                            recordsFiltered: 0,
+                            data: []
+                        });
+                        hideLoading();
+                        return;
+                    }
+
+                    var filters = getFilters();
+
+                    showLoading();
+
+                    $.ajax({
+                        url: '/CompareVariation/GetData',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
                             draw: d.draw,
                             start: d.start,
                             length: d.length,
                             search: d.search,
                             order: d.order,
                             supplierCode: filters.supplierCode,
-                            modelId: filters.modelId,
+                            modelIds: filters.modelIds,
                             partId: filters.partId,
                             startDate: filters.startDate,
                             endDate: filters.endDate,
                             creationStartDate: filters.creationStartDate,
                             creationEndDate: filters.creationEndDate
-                        });
-                    },
-                    beforeSend: function() {
-                        showLoading();
-                    },
-                    complete: function() {
-                        hideLoading();
-                    },
-                    error: function(xhr, error, thrown) {
-                        hideLoading();
-                        console.error('Erro ao carregar dados:', error);
-                        alert('Erro ao carregar dados. Por favor, tente novamente.');
-                    }
+                        }),
+                        success: function (response) {
+                            callback(response);
+                        },
+                        error: function (xhr, error) {
+                            console.error('Erro ao carregar dados:', error);
+                            alert('Erro ao carregar dados. Por favor, tente novamente.');
+                            callback({
+                                draw: d.draw,
+                                recordsTotal: 0,
+                                recordsFiltered: 0,
+                                data: []
+                            });
+                        },
+                        complete: function () {
+                            hideLoading();
+                        }
+                    });
                 },
                 columns: [
                     { 
@@ -323,24 +344,27 @@
                 ],
                 language: {
                     url: '/assets/data/datatables-pt-BR.json',
-                    processing: 'Carregando...'
+                    processing: 'Carregando...',
+                    emptyTable: emptyStateMessage
                 },
                 order: [[4, 'desc']]
             });
             
             $('#btnLimpar').on('click', function() {
                 $('#SupplierCode').val('').trigger('change');
-                $('#ModelId').val('').trigger('change');
+                $('#ModelId').val(null).trigger('change');
                 $('#PartId').val('').trigger('change');
                 $('#StartDate').val('');
                 $('#EndDate').val('');
                 $('#CreationStartDate').val('');
                 $('#CreationEndDate').val('');
                 
-                table.ajax.reload();
+                shouldLoadData = false;
+                table.ajax.reload(null, false);
             });
             
             $('#btnFiltrar').on('click', function() {
+                shouldLoadData = true;
                 table.ajax.reload();
             });
             
@@ -359,7 +383,7 @@
                 
                 var params = [];
                 if (filters.supplierCode) params.push('supplierName=' + encodeURIComponent(filters.supplierCode));
-                if (filters.modelId) params.push('model=' + encodeURIComponent(filters.modelId));
+                if (filters.modelIds && filters.modelIds.length > 0) params.push('model=' + encodeURIComponent(filters.modelIds.join(',')));
                 if (filters.startDate) params.push('startDate=' + encodeURIComponent(convertDateToISO(filters.startDate)));
                 if (filters.endDate) params.push('endDate=' + encodeURIComponent(convertDateToISO(filters.endDate)));
                 if (filters.creationStartDate) params.push('creationStartDate=' + encodeURIComponent(convertDateToISO(filters.creationStartDate)));

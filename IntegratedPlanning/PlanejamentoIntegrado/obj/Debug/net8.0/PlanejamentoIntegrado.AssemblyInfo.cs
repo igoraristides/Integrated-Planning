@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PlanejamentoIntegrado")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+924c8488b121aa6641898436c83e396ee8043328")]
 [assembly: System.Reflection.AssemblyProductAttribute("PlanejamentoIntegrado")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PlanejamentoIntegrado")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

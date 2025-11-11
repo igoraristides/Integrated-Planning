@@ -1,3 +1,4 @@
+@using System.Globalization
 @{
     ViewData["Title"] = "Detalhes da Peça - Estoque";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -68,6 +69,38 @@
             
             <!-- BEGIN panel-body -->
             <div class="panel-body">
+                @{
+                    var firstQuantityRow = quantityMatrix?.FirstOrDefault(r => r.Total.HasValue);
+                    var lastQuantityRow = quantityMatrix?.LastOrDefault(r => r.Total.HasValue);
+                    decimal? quantityDifference = null;
+                    if (firstQuantityRow != null && lastQuantityRow != null)
+                    {
+                        quantityDifference = firstQuantityRow.Total.Value - lastQuantityRow.Total.Value;
+                    }
+
+                    var quantityDifferenceClass = "text-muted";
+                    var quantityDifferenceText = "-";
+                    if (quantityDifference.HasValue)
+                    {
+                        quantityDifferenceText = $"{quantityDifference.Value.ToString("N0")} peça(s)";
+                        if (quantityDifference.Value > 0)
+                        {
+                            quantityDifferenceClass = "text-danger";
+                        }
+                        else if (quantityDifference.Value < 0)
+                        {
+                            quantityDifferenceClass = "text-info";
+                        }
+                        else
+                        {
+                            quantityDifferenceClass = "text-secondary";
+                        }
+                    }
+                    else
+                    {
+                        quantityDifferenceText = "-";
+                    }
+                }
                                     
                 <table id="data-table-buttons" width="100%" class="table table-bordered align-middle">
                     <thead>
@@ -163,6 +196,10 @@
                         }
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-end align-items-center mt-3">
+                    <span class="fw-semibold me-2">Diferença de Totais:</span>
+                    <span class="fw-bold @quantityDifferenceClass">@quantityDifferenceText</span>
+                </div>
             </div>
             <!-- END panel-body -->
         </div>
@@ -187,6 +224,38 @@
             
             <!-- BEGIN panel-body -->
             <div class="panel-body">
+                @{
+                    var firstValueRow = valueMatrix?.FirstOrDefault(r => r.Total.HasValue);
+                    var lastValueRow = valueMatrix?.LastOrDefault(r => r.Total.HasValue);
+                    decimal? valueDifference = null;
+                    if (firstValueRow != null && lastValueRow != null)
+                    {
+                        valueDifference = firstValueRow.Total.Value - lastValueRow.Total.Value;
+                    }
+
+                    var valueDifferenceClass = "text-muted";
+                    var valueDifferenceText = "-";
+                    if (valueDifference.HasValue)
+                    {
+                        valueDifferenceText = $"R${valueDifference.Value.ToString("N2", CultureInfo.GetCultureInfo("pt-BR"))}";
+                        if (valueDifference.Value > 0)
+                        {
+                            valueDifferenceClass = "text-danger";
+                        }
+                        else if (valueDifference.Value < 0)
+                        {
+                            valueDifferenceClass = "text-info";
+                        }
+                        else
+                        {
+                            valueDifferenceClass = "text-secondary";
+                        }
+                    }
+                    else
+                    {
+                        valueDifferenceText = "-";
+                    }
+                }
                                     
                 <table id="data-table-buttons2" width="100%" class="table table-bordered align-middle">
                     <thead>
@@ -280,6 +349,10 @@
                         }
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-end align-items-center mt-3">
+                    <span class="fw-semibold me-2">Diferença de Totais:</span>
+                    <span class="fw-bold @valueDifferenceClass">@valueDifferenceText</span>
+                </div>
             </div>
             <!-- END panel-body -->
         </div>

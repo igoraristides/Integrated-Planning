@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlanejamentoIntegrado.Helpers;
@@ -41,21 +43,25 @@ public class StockController(
                 searchTerm = request.PartId;
             }
 
+            var modelFilters = (request.ModelIds ?? Enumerable.Empty<string>())
+                .Where(m => !string.IsNullOrWhiteSpace(m))
+                .Select(m => m.Trim());
+
             var totalFiltered = await stockItemService.CountStockItemsWithFilters(
-                supplierName: request.SupplierCode,
-                model: request.ModelId,
+                supplierName: request.SupplierCode ?? string.Empty,
+                models: modelFilters,
                 inventoryItemId: null,
-                searchTerm: searchTerm
+                searchTerm: searchTerm ?? string.Empty
             );
 
             var pageNumber = (request.Start / request.Length) + 1;
             var pageSize = request.Length;
 
             var stockItems = await stockItemService.GetStockItemsWithFilters(
-                supplierName: request.SupplierCode,
-                model: request.ModelId,
+                supplierName: request.SupplierCode ?? string.Empty,
+                models: modelFilters,
                 inventoryItemId: null,
-                searchTerm: searchTerm,
+                searchTerm: searchTerm ?? string.Empty,
                 pageNumber: pageNumber,
                 pageSize: pageSize
             );
@@ -108,11 +114,19 @@ public class StockController(
         DateTime? creationEndDate
     )
     {
+        var modelFilters = string.IsNullOrWhiteSpace(model)
+            ? Array.Empty<string>()
+            : model
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(m => !string.IsNullOrWhiteSpace(m))
+                .Select(m => m.Trim())
+                .ToArray();
+
         var stockItems = await stockItemService.GetStockItemsWithFilters(
-            supplierName: supplierName,
-            model: model,
+            supplierName: supplierName ?? string.Empty,
+            models: modelFilters,
             inventoryItemId: id,
-            searchTerm: searchTerm
+            searchTerm: searchTerm ?? string.Empty
         );
 
         var stockItem = stockItems.FirstOrDefault();

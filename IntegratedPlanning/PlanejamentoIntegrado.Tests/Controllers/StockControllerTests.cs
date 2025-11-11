@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -86,10 +87,26 @@ public class StockControllerTests : BaseTest
         };
 
         _mockStockItemService
-            .Setup(x => x.CountStockItemsWithFilters(null, null, null, null))
+            .Setup(x =>
+                x.CountStockItemsWithFilters(
+                    It.IsAny<string>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    null,
+                    It.IsAny<string>()
+                )
+            )
             .ReturnsAsync(1);
         _mockStockItemService
-            .Setup(x => x.GetStockItemsWithFilters(null, null, null, null, 1, 10))
+            .Setup(x =>
+                x.GetStockItemsWithFilters(
+                    It.IsAny<string>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    null,
+                    It.IsAny<string>(),
+                    1,
+                    10
+                )
+            )
             .ReturnsAsync(stockItems);
 
         var result = await _controller.GetData(request);
@@ -111,7 +128,16 @@ public class StockControllerTests : BaseTest
         };
 
         _mockStockItemService
-            .Setup(x => x.GetStockItemsWithFilters(null, null, 1, null, 0, 0))
+            .Setup(x =>
+                x.GetStockItemsWithFilters(
+                    It.IsAny<string>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    1,
+                    It.IsAny<string>(),
+                    0,
+                    0
+                )
+            )
             .ReturnsAsync(new List<StockItem> { stockItem });
 
         _mockScheduleService
@@ -176,7 +202,16 @@ public class StockControllerTests : BaseTest
     public async Task Details_WithInvalidId_ReturnsNotFound()
     {
         _mockStockItemService
-            .Setup(x => x.GetStockItemsWithFilters(null, null, 999, null, 0, 0))
+            .Setup(x =>
+                x.GetStockItemsWithFilters(
+                    It.IsAny<string>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    999,
+                    It.IsAny<string>(),
+                    0,
+                    0
+                )
+            )
             .ReturnsAsync(new List<StockItem>());
 
         var result = await _controller.Details(999, null, null, null, null, null, null, null);

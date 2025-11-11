@@ -1528,11 +1528,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/igoraristides/Workspace/Personal Projects/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj",
+      "projectUniqueName": "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj",
       "projectName": "PlanejamentoIntegrado",
-      "projectPath": "/Users/igoraristides/Workspace/Personal Projects/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj",
+      "projectPath": "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj",
       "packagesPath": "/Users/igoraristides/.nuget/packages/",
-      "outputPath": "/Users/igoraristides/Workspace/Personal Projects/IntegratedPlanning/PlanejamentoIntegrado/obj/",
+      "outputPath": "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/igoraristides/.nuget/NuGet/NuGet.Config"

@@ -3,16 +3,19 @@
   "tasks": [
     {
       "label": "build",
-      "command": "dotnet",
       "type": "process",
+      "command": "dotnet",
       "args": [
         "build",
-        "/Users/igoraristides/Workspace/Personal Projects/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj"
+        "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj"
       ],
       "problemMatcher": "$msCompile",
       "group": {
         "kind": "build",
         "isDefault": true
+      },
+      "options": {
+        "cwd": "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning"
       }
     }
   ]

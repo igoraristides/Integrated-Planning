@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using PlanejamentoIntegrado.Models;
 using PlanejamentoIntegrado.Repositories;
 
@@ -8,14 +11,17 @@ public class StockItemService(IRepository<StockItem> stockItemRepository) : ISto
     private const int DefaultOrganizationId = 192; // TODO: Tornar configurável
 
     public async Task<List<StockItem>> GetStockItemsWithFilters(
-        string? supplierName,
-        string? model,
+        string supplierName,
+        IEnumerable<string> models,
         int? inventoryItemId,
-        string? searchTerm,
+        string searchTerm,
         int pageNumber = 0,
         int pageSize = 0
     )
     {
+        var normalizedModelList = NormalizeModels(models);
+        var hasModelFilters = normalizedModelList.Count > 0;
+
         return await stockItemRepository.GetAll(
             filter: s =>
                 s.OrganizationId == DefaultOrganizationId
@@ -24,8 +30,11 @@ public class StockItemService(IRepository<StockItem> stockItemRepository) : ISto
                     || (s.SupplierName != null && s.SupplierName.Contains(supplierName))
                 )
                 && (
-                    string.IsNullOrEmpty(model)
-                    || (s.Description != null && s.Description.Contains(model))
+                    !hasModelFilters
+                    || (
+                        s.Description != null
+                        && normalizedModelList.Contains(s.Description.ToLower())
+                    )
                 )
                 && (!inventoryItemId.HasValue || s.InventoryItemId == inventoryItemId.Value)
                 && (
@@ -40,12 +49,15 @@ public class StockItemService(IRepository<StockItem> stockItemRepository) : ISto
     }
 
     public async Task<int> CountStockItemsWithFilters(
-        string? supplierName,
-        string? model,
+        string supplierName,
+        IEnumerable<string> models,
         int? inventoryItemId,
-        string? searchTerm
+        string searchTerm
     )
     {
+        var normalizedModelList = NormalizeModels(models);
+        var hasModelFilters = normalizedModelList.Count > 0;
+
         return await stockItemRepository.Count(predicate: s =>
             s.OrganizationId == DefaultOrganizationId
             && (
@@ -53,8 +65,8 @@ public class StockItemService(IRepository<StockItem> stockItemRepository) : ISto
                 || (s.SupplierName != null && s.SupplierName.Contains(supplierName))
             )
             && (
-                string.IsNullOrEmpty(model)
-                || (s.Description != null && s.Description.Contains(model))
+                !hasModelFilters
+                || (s.Description != null && normalizedModelList.Contains(s.Description.ToLower()))
             )
             && (!inventoryItemId.HasValue || s.InventoryItemId == inventoryItemId.Value)
             && (
@@ -83,5 +95,14 @@ public class StockItemService(IRepository<StockItem> stockItemRepository) : ISto
                 s.OrganizationId == DefaultOrganizationId && !string.IsNullOrEmpty(s.ProductCode),
             orderBy: q => q.OrderBy(p => p)
         );
+    }
+
+    private static List<string> NormalizeModels(IEnumerable<string> models)
+    {
+        return models
+            .Where(m => !string.IsNullOrWhiteSpace(m))
+            .Select(m => m.Trim().ToLowerInvariant())
+            .Distinct()
+            .ToList();
     }
 }

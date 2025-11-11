@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "2kuAmxAkzCQ=",
+  "dgSpecHash": "ZJIuOIxAA5Q=",
   "success": true,
-  "projectFilePath": "/Users/igoraristides/Workspace/Personal Projects/IntegratedPlanning/PlanejamentoIntegrado.Tests/PlanejamentoIntegrado.Tests.csproj",
+  "projectFilePath": "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado.Tests/PlanejamentoIntegrado.Tests.csproj",
   "expectedPackageFiles": [
     "/Users/igoraristides/.nuget/packages/automapper/14.0.0/automapper.14.0.0.nupkg.sha512",
     "/Users/igoraristides/.nuget/packages/castle.core/5.1.1/castle.core.5.1.1.nupkg.sha512",

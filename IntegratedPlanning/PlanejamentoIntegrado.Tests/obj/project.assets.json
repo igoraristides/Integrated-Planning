@@ -9487,11 +9487,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/igoraristides/Workspace/Personal Projects/IntegratedPlanning/PlanejamentoIntegrado.Tests/PlanejamentoIntegrado.Tests.csproj",
+      "projectUniqueName": "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado.Tests/PlanejamentoIntegrado.Tests.csproj",
       "projectName": "PlanejamentoIntegrado.Tests",
-      "projectPath": "/Users/igoraristides/Workspace/Personal Projects/IntegratedPlanning/PlanejamentoIntegrado.Tests/PlanejamentoIntegrado.Tests.csproj",
+      "projectPath": "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado.Tests/PlanejamentoIntegrado.Tests.csproj",
       "packagesPath": "/Users/igoraristides/.nuget/packages/",
-      "outputPath": "/Users/igoraristides/Workspace/Personal Projects/IntegratedPlanning/PlanejamentoIntegrado.Tests/obj/",
+      "outputPath": "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado.Tests/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/igoraristides/.nuget/NuGet/NuGet.Config"
@@ -9506,8 +9506,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/igoraristides/Workspace/Personal Projects/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj": {
-              "projectPath": "/Users/igoraristides/Workspace/Personal Projects/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj"
+            "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj": {
+              "projectPath": "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj"
             }
           }
         }

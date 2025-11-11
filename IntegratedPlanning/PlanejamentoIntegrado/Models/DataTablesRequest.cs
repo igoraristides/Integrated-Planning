@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace PlanejamentoIntegrado.Models;
 
 public class DataTablesRequest
@@ -8,7 +10,7 @@ public class DataTablesRequest
     public DataTablesSearch? Search { get; set; }
     public List<DataTablesOrder>? Order { get; set; }
     public string? SupplierCode { get; set; }
-    public string? ModelId { get; set; }
+    public List<string>? ModelIds { get; set; }
     public string? PartId { get; set; } // Mudado de int? para string? (ProductCode)
     public string? StartDate { get; set; }
     public string? EndDate { get; set; }

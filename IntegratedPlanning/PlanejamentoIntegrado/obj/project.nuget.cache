@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Uqw2ziOlj6o=",
+  "dgSpecHash": "8AzdN9NWoB0=",
   "success": true,
-  "projectFilePath": "/Users/igoraristides/Workspace/Personal Projects/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj",
+  "projectFilePath": "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj",
   "expectedPackageFiles": [
     "/Users/igoraristides/.nuget/packages/automapper/14.0.0/automapper.14.0.0.nupkg.sha512",
     "/Users/igoraristides/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/8.0.19/microsoft.aspnetcore.authentication.jwtbearer.8.0.19.nupkg.sha512",
