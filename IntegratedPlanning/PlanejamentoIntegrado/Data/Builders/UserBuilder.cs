@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlanejamentoIntegrado.Models;
 
 namespace PlanejamentoIntegrado.Data;
@@ -32,6 +33,6 @@ public class UserBuilder : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.ProfileId).HasColumnName("USER_PROFILE_ID");
 
-        builder.Property(u => u.CreatedAt).HasColumnName("CREATION_DATE");
+        builder.Property(u => u.CreatedAt).HasColumnName("CREATION_DATE").HasColumnType("DATE");
     }
 }

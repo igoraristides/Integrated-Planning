@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using PlanejamentoIntegrado.Constants;
 using PlanejamentoIntegrado.Models;
 using PlanejamentoIntegrado.Repositories;
@@ -9,23 +10,80 @@ namespace PlanejamentoIntegrado.Services;
 public class UserService(
     IRepository<User> userRepository,
     IMapper mapper,
-    IPasswordHasher<User> passwordHasher
+    IPasswordHasher<User> passwordHasher,
+    ILogger<UserService> logger
 ) : IUserService
 {
     public async Task<bool> Register(UserViewModel model)
     {
-        var existingUser = await userRepository.Get(u => u.Login == model.Login);
-        if (existingUser != null)
-            return false;
+        try
+        {
+            logger.LogInformation("Iniciando registro de usuário. Login: {Login}", model.Login);
 
-        var user = mapper.Map<User>(model);
+            var existingUser = await userRepository.Get(u => u.Login == model.Login);
+            if (existingUser != null)
+            {
+                logger.LogWarning("Usuário já existe. Login: {Login}", model.Login);
+                return false;
+            }
 
-        user.PasswordHash = passwordHasher.HashPassword(user, model.Password);
+            var user = mapper.Map<User>(model);
+            logger.LogInformation("=== LOG DE DATA NO UserService ===");
+            logger.LogInformation(
+                "Usuário mapeado. ID: {Id}, Name: {Name}, Email: {Email}",
+                user.Id,
+                user.Name,
+                user.Email
+            );
+            logger.LogInformation(
+                "CreatedAt após mapeamento: {CreatedAt} (Tipo: {Type})",
+                user.CreatedAt,
+                user.CreatedAt?.GetType().FullName ?? "NULL"
+            );
+            if (user.CreatedAt.HasValue)
+            {
+                var dt = user.CreatedAt.Value;
+                logger.LogInformation(
+                    "CreatedAt detalhado - Year: {Year}, Month: {Month}, Day: {Day}, Hour: {Hour}, Minute: {Minute}, Second: {Second}",
+                    dt.Year,
+                    dt.Month,
+                    dt.Day,
+                    dt.Hour,
+                    dt.Minute,
+                    dt.Second
+                );
+                logger.LogInformation("CreatedAt ToString(): {ToString}", dt.ToString());
+            }
+            logger.LogInformation("=== FIM LOG DE DATA NO UserService ===");
 
-        await userRepository.Insert(user);
-        await userRepository.SaveChanges();
+            user.PasswordHash = passwordHasher.HashPassword(user, model.Password ?? string.Empty);
+            logger.LogInformation(
+                "Senha hash gerada. PasswordHash length: {Length}",
+                user.PasswordHash?.Length ?? 0
+            );
 
-        return true;
+            await userRepository.Insert(user);
+            logger.LogInformation(
+                "Usuário inserido no repositório. ID: {Id}, CreatedAt: {CreatedAt}",
+                user.Id,
+                user.CreatedAt
+            );
+
+            await userRepository.SaveChanges();
+            logger.LogInformation("SaveChanges executado com sucesso. ID final: {Id}", user.Id);
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(
+                ex,
+                "Erro ao registrar usuário. Login: {Login}, Erro: {Message}",
+                model.Login,
+                ex.Message
+            );
+            throw;
+        }
     }
 
     //Feito dessa forma devido a não validação de unicidade do banco
