@@ -10,7 +10,8 @@ public static class MessageConstants
     public const string UserDeletedSuccess = "Usuário excluído com sucesso.";
     public const string UserLoginAlreadyExists = "Login já está em uso.";
     public const string UserNotFound = "Usuário não encontrado.";
-    public const string UnexpectedError = "Erro inesperado. Tente novamente ou contate o administrador.";
+    public const string UnexpectedError =
+        "Erro inesperado. Tente novamente ou contate o administrador.";
     public const string CurrentPasswordError = "Senha atual incorreta.";
     public const string PasswordChangedSuccess = "Senha alterada com sucesso.";
 }

@@ -84,11 +84,11 @@
                         quantityDifferenceText = $"{quantityDifference.Value.ToString("N0")} peça(s)";
                         if (quantityDifference.Value > 0)
                         {
-                            quantityDifferenceClass = "text-danger";
+                            quantityDifferenceClass = "text-info";
                         }
                         else if (quantityDifference.Value < 0)
                         {
-                            quantityDifferenceClass = "text-info";
+                            quantityDifferenceClass = "text-danger";
                         }
                         else
                         {
@@ -230,11 +230,11 @@
                         valueDifferenceText = $"R${valueDifference.Value.ToString("N2", CultureInfo.GetCultureInfo("pt-BR"))}";
                         if (valueDifference.Value > 0)
                         {
-                            valueDifferenceClass = "text-danger";
+                            valueDifferenceClass = "text-info";
                         }
                         else if (valueDifference.Value < 0)
                         {
-                            valueDifferenceClass = "text-info";
+                            valueDifferenceClass = "text-danger";
                         }
                         else
                         {
@@ -374,18 +374,7 @@
                 language: {
                     url: '/assets/data/datatables-pt-BR.json',
                     emptyTable: 'Nenhum dado disponível'
-                },
-                columnDefs: [
-                    {
-                        targets: '_all',
-                        render: function(data, type, row, meta) {
-                            if (data === null || data === undefined || data === '') {
-                                return '';
-                            }
-                            return data;
-                        }
-                    }
-                ]
+                }
             });
             
             $('#data-table-buttons2').DataTable({
@@ -407,18 +396,7 @@
                 language: {
                     url: '/assets/data/datatables-pt-BR.json',
                     emptyTable: 'Nenhum dado disponível'
-                },
-                columnDefs: [
-                    {
-                        targets: '_all',
-                        render: function(data, type, row, meta) {
-                            if (data === null || data === undefined || data === '') {
-                                return '';
-                            }
-                            return data;
-                        }
-                    }
-                ]
+                }
             });
             
             var chartDataFromServer = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(chartData));

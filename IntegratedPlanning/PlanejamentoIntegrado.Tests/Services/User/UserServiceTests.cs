@@ -39,7 +39,7 @@ public class UserServiceTests : BaseTest
             Surname = "Silva",
             Email = "joao@teste.com",
             Login = "joao.silva",
-            Password = "senha123"
+            Password = "senha123",
         };
 
         var user = CreateTestUser();
@@ -99,14 +99,14 @@ public class UserServiceTests : BaseTest
             {
                 Id = 1,
                 Name = "João",
-                Login = "joao.silva"
+                Login = "joao.silva",
             },
             new UserViewModel
             {
                 Id = 2,
                 Name = "Maria",
-                Login = "maria.santos"
-            }
+                Login = "maria.santos",
+            },
         };
 
         _mockUserRepository.Setup(x => x.GetAll(null, 0, 0, null)).ReturnsAsync(users);
@@ -128,7 +128,7 @@ public class UserServiceTests : BaseTest
         {
             Id = 1,
             Name = "João",
-            Login = "joao.silva"
+            Login = "joao.silva",
         };
 
         _mockUserRepository.Setup(x => x.Get(1)).ReturnsAsync(user);
@@ -161,7 +161,7 @@ public class UserServiceTests : BaseTest
             Id = 1,
             Name = "João Editado",
             Login = "joao.editado",
-            Password = "novaSenha123"
+            Password = "novaSenha123",
         };
 
         var users = new List<PlanejamentoIntegrado.Models.User> { CreateTestUser() };
@@ -215,7 +215,12 @@ public class UserServiceTests : BaseTest
     [Fact]
     public async Task Edit_LoginAlreadyTaken_ReturnsFailureWithError()
     {
-        var userViewModel = new UserViewModel { Id = 1, Login = "maria.santos", Password = "senha123" };
+        var userViewModel = new UserViewModel
+        {
+            Id = 1,
+            Login = "maria.santos",
+            Password = "senha123",
+        };
 
         var users = CreateTestUsers();
 

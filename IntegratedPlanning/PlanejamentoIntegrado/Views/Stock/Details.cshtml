@@ -391,18 +391,7 @@
                 language: {
                     url: '/assets/data/datatables-pt-BR.json',
                     emptyTable: 'Nenhum dado disponível'
-                },
-                columnDefs: [
-                    {
-                        targets: '_all',
-                        render: function(data, type, row, meta) {
-                            if (data === null || data === undefined || data === '') {
-                                return '';
-                            }
-                            return data;
-                        }
-                    }
-                ]
+                }
             });
             
             $('#data-table-buttons2').DataTable({
@@ -424,18 +413,7 @@
                 language: {
                     url: '/assets/data/datatables-pt-BR.json',
                     emptyTable: 'Nenhum dado disponível'
-                },
-                columnDefs: [
-                    {
-                        targets: '_all',
-                        render: function(data, type, row, meta) {
-                            if (data === null || data === undefined || data === '') {
-                                return '';
-                            }
-                            return data;
-                        }
-                    }
-                ]
+                }
             });
             
             var chartDataFromServer = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(chartData));
