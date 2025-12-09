@@ -13,7 +13,7 @@ public class StockController(
     ISupplierService supplierService,
     IStockItemService stockItemService,
     IScheduleService scheduleService,
-    IMaterialProducedService materialProducedService
+    IMaterialConsumedService materialConsumedService
 ) : Controller
 {
     [HttpGet]
@@ -136,6 +136,7 @@ public class StockController(
         }
 
         ViewBag.PecaNome = $"{stockItem.ProductCode} - {stockItem.Description}";
+
         var unitValue = stockItem.NewCost ?? 35.00m;
 
         var concatenatedSegments = stockItem.ProductCode;
@@ -150,7 +151,7 @@ public class StockController(
         );
         ViewBag.ChartData = chartData;
 
-        var consumptionByWeek = await materialProducedService.GetConsumptionByWeek(
+        var consumptionByWeek = await materialConsumedService.GetConsumptionByWeek(
             concatenatedSegments: concatenatedSegments,
             creationStartDate: creationStartDate,
             creationEndDate: creationEndDate

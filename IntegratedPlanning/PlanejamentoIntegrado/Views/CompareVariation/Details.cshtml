@@ -101,6 +101,7 @@
                     }
                 }
                                     
+                <div class="table-responsive" style="overflow-x: auto;">
                 <table id="data-table-buttons" width="100%" class="table table-bordered align-middle">
                     <thead>
                         <tr>
@@ -144,11 +145,11 @@
                                             {
                                                 var previousValue = previousRowValues[week].Value;
                                                 
-                                                if (value < previousValue)
+                                                if (value > previousValue)
                                                 {
                                                     cellClass += " table-danger";
                                                 }
-                                                else if (value > previousValue)
+                                                else if (value < previousValue)
                                                 {
                                                     cellClass += " table-info";
                                                 }
@@ -186,6 +187,7 @@
                         }
                     </tbody>
                 </table>
+                </div>
                 <div class="d-flex justify-content-end align-items-center mt-3">
                     <span class="fw-semibold me-2">Diferença de Totais:</span>
                     <span class="fw-bold @quantityDifferenceClass">@quantityDifferenceText</span>
@@ -227,7 +229,7 @@
                     var valueDifferenceText = "-";
                     if (valueDifference.HasValue)
                     {
-                        valueDifferenceText = $"R${valueDifference.Value.ToString("N2", CultureInfo.GetCultureInfo("pt-BR"))}";
+                        valueDifferenceText = $"R$ {valueDifference.Value.ToString("N2", CultureInfo.GetCultureInfo("pt-BR"))}";
                         if (valueDifference.Value > 0)
                         {
                             valueDifferenceClass = "text-info";
@@ -247,6 +249,7 @@
                     }
                 }
                                     
+                <div class="table-responsive" style="overflow-x: auto;">
                 <table id="data-table-buttons2" width="100%" class="table table-bordered align-middle">
                     <thead>
                         <tr>
@@ -290,17 +293,17 @@
                                             {
                                                 var previousValue = previousRowValues[week].Value;
                                                 
-                                                if (value < previousValue)
+                                                if (value > previousValue)
                                                 {
                                                     cellClass += " table-danger";
                                                 }
-                                                else if (value > previousValue)
+                                                else if (value < previousValue)
                                                 {
                                                     cellClass += " table-info";
                                                 }
                                             }
                                             
-                                            <td class="@cellClass">@(value.HasValue ? value.Value.ToString("N2") : "-")</td>
+                                            <td class="@cellClass">@(value.HasValue ? "R$ " + value.Value.ToString("N2") : "-")</td>
                                         }
                                         
                                         var totalClass = "text-center";
@@ -316,7 +319,7 @@
                                             }
                                         }
                                     }
-                                    <td class="@totalClass"><strong>@(row.Total?.ToString("N2") ?? "-")</strong></td>
+                                    <td class="@totalClass"><strong>@(row.Total.HasValue ? "R$ " + row.Total.Value.ToString("N2") : "-")</strong></td>
                                     <td class="text-center"><strong>@(row.CV?.ToString("N1") ?? "-")</strong></td>
                                     <td class="text-center"><strong class="@(row.CLCV == "H" ? "text-danger" : "")">@(row.CLCV ?? "-")</strong></td>
                                 </tr>
@@ -332,6 +335,7 @@
                         }
                     </tbody>
                 </table>
+                </div>
                 <div class="d-flex justify-content-end align-items-center mt-3">
                     <span class="fw-semibold me-2">Diferença de Totais:</span>
                     <span class="fw-bold @valueDifferenceClass">@valueDifferenceText</span>
@@ -355,14 +359,13 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $('#data-table-buttons').DataTable({
+            var table1 = $('#data-table-buttons').DataTable({
                 responsive: false,
                 paging: false,
                 info: false,
                 searching: false,
                 ordering: false,
                 autoWidth: false,
-                scrollX: true,
                 dom: '<"row mb-3"<"col-md-6"B><"col-md-6"fr>>t<"row mt-3"<"col-md-auto me-md-auto"i><"col-md-auto ms-md-auto"p>>',
                 buttons: [
                     { extend: 'copy', className: 'btn-sm' },
@@ -382,14 +385,14 @@
                 }
             });
             
-            $('#data-table-buttons2').DataTable({
+            
+            var table2 = $('#data-table-buttons2').DataTable({
                 responsive: false,
                 paging: false,
                 info: false,
                 searching: false,
                 ordering: false,
                 autoWidth: false,
-                scrollX: true,
                 dom: '<"row mb-3"<"col-md-6"B><"col-md-6"fr>>t<"row mt-3"<"col-md-auto me-md-auto"i><"col-md-auto ms-md-auto"p>>',
                 buttons: [
                     { extend: 'copy', className: 'btn-sm' },
@@ -408,6 +411,7 @@
                     emptyTable: 'Nenhum dado disponível'
                 }
             });
+            
             
             var chartDataFromServer = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(chartData));
             

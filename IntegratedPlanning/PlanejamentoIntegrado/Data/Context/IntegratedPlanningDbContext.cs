@@ -12,7 +12,7 @@ public class IntegratedPlanningDbContext(DbContextOptions<IntegratedPlanningDbCo
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Schedule> Schedules { get; set; }
     public DbSet<StockItem> StockItems { get; set; }
-    public DbSet<MaterialProduced> MaterialsProduced { get; set; }
+    public DbSet<MaterialConsumed> MaterialsConsumed { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -20,7 +20,7 @@ public class IntegratedPlanningDbContext(DbContextOptions<IntegratedPlanningDbCo
         modelBuilder.ApplyConfiguration(new SupplierBuilder());
         modelBuilder.ApplyConfiguration(new ScheduleBuilder());
         modelBuilder.ApplyConfiguration(new StockItemBuilder());
-        modelBuilder.ApplyConfiguration(new MaterialProducedBuilder());
+        modelBuilder.ApplyConfiguration(new MaterialConsumedBuilder());
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

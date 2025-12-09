@@ -7,7 +7,7 @@
       "command": "dotnet",
       "args": [
         "build",
-        "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj"
+        "/Users/igoraristides/Workspace/PersonalProjects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado/PlanejamentoIntegrado.csproj"
       ],
       "problemMatcher": "$msCompile",
       "group": {
@@ -15,7 +15,7 @@
         "isDefault": true
       },
       "options": {
-        "cwd": "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning"
+        "cwd": "/Users/igoraristides/Workspace/PersonalProjects/Integrated-Planning/IntegratedPlanning"
       }
     }
   ]

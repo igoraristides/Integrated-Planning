@@ -4,10 +4,10 @@ using PlanejamentoIntegrado.Repositories;
 
 namespace PlanejamentoIntegrado.Services;
 
-public class MaterialProducedService(IRepository<MaterialProduced> materialProducedRepository)
-    : IMaterialProducedService
+public class MaterialConsumedService(IRepository<MaterialConsumed> materialConsumedRepository)
+    : IMaterialConsumedService
 {
-    private const int DefaultOrganizationId = 83;
+    private const int DefaultOrganizationId = 192;
 
     public async Task<Dictionary<string, decimal>> GetConsumptionByWeek(
         string? concatenatedSegments,
@@ -21,18 +21,18 @@ public class MaterialProducedService(IRepository<MaterialProduced> materialProdu
             creationStartDate = creationEndDate.Value.AddDays(-7 * 10);
         }
 
-        var materials = await materialProducedRepository.GetAll(filter: m =>
-            m.OrgId == DefaultOrganizationId
+        var materials = await materialConsumedRepository.GetAll(filter: m =>
+            m.OrganizationId == DefaultOrganizationId
             && !string.IsNullOrEmpty(concatenatedSegments)
             && m.ConcatenatedSegments == concatenatedSegments
-            && m.InvoiceDate.HasValue
-            && m.InvoiceDate.Value >= creationStartDate.Value
-            && m.InvoiceDate.Value <= creationEndDate.Value
+            && m.TransactionDate.HasValue
+            && m.TransactionDate.Value.Date >= creationStartDate.Value.Date
+            && m.TransactionDate.Value.Date <= creationEndDate.Value.Date
         );
 
         var consumptionByWeek = materials
-            .Where(m => m.InvoiceDate.HasValue)
-            .GroupBy(m => GetISOWeekNumber(m.InvoiceDate!.Value))
+            .Where(m => m.TransactionDate.HasValue)
+            .GroupBy(m => GetISOWeekNumber(m.TransactionDate!.Value))
             .ToDictionary(g => g.Key, g => g.Sum(m => m.TransactionQuantity ?? 0));
 
         return consumptionByWeek;

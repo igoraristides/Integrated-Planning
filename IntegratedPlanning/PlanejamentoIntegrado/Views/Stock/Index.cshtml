@@ -93,7 +93,7 @@
                     <div class="row mb-15px">
                         <div class="col-md-6"></div>
                         <div class="col-md-6">
-                            <label class="form-label" for="CreationStartDate">PERÍODO DE CRIAÇÃO</label>
+                            <label class="form-label" for="CreationStartDate">PERÍODO DO ARQUIVO</label>
                             <div class="col-lg-12">
                                 <div class="input-group input-daterange">
                                     <input type="text" class="form-control" id="CreationStartDate" name="CreationStartDate" placeholder="Data Inicial" />
@@ -201,6 +201,24 @@
                 });
             });
             
+            // TODO: Definir valores padrão para trazer as últimas 150 semanas (3 anos)
+            // var today = new Date();
+            // var endDate = new Date(today);
+            // var startDate = new Date(today);
+            // startDate.setDate(startDate.getDate() - (150 * 7)); // 150 semanas atrás
+            // 
+            // var formatDate = function(date) {
+            //     var day = ('0' + date.getDate()).slice(-2);
+            //     var month = ('0' + (date.getMonth() + 1)).slice(-2);
+            //     var year = date.getFullYear();
+            //     return day + '/' + month + '/' + year;
+            // };
+            // 
+            // $('#StartDate').val(formatDate(startDate));
+            // $('#EndDate').val(formatDate(endDate));
+            // $('#CreationStartDate').val(formatDate(startDate));
+            // $('#CreationEndDate').val(formatDate(endDate));
+            
             function convertDateToISO(dateString) {
                 if (!dateString) return null;
                 var parts = dateString.split('/');
@@ -281,7 +299,7 @@
                     { 
                         data: 'unitValue',
                         render: function(data) {
-                            return data != null ? data.toFixed(2).replace('.', ',') : '0,00';
+                            return data != null ? 'R$ ' + data.toFixed(2).replace('.', ',') : 'R$ 0,00';
                         },
                         className: 'text-end'
                     },
@@ -295,7 +313,7 @@
                     { 
                         data: 'totalValue',
                         render: function(data) {
-                            return data != null ? data.toFixed(2).replace('.', ',') : '0,00';
+                            return data != null ? 'R$ ' + data.toFixed(2).replace('.', ',') : 'R$ 0,00';
                         },
                         className: 'text-end'
                     },

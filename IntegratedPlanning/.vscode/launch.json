@@ -6,9 +6,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado/bin/Debug/net8.0/PlanejamentoIntegrado.dll",
+      "program": "/Users/igoraristides/Workspace/PersonalProjects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado/bin/Debug/net8.0/PlanejamentoIntegrado.dll",
       "args": [],
-      "cwd": "/Users/igoraristides/Workspace/Personal Projects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado",
+      "cwd": "/Users/igoraristides/Workspace/PersonalProjects/Integrated-Planning/IntegratedPlanning/PlanejamentoIntegrado",
       "stopAtEntry": false,
       "serverReadyAction": {
         "action": "openExternally",

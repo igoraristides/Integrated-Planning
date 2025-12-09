@@ -1,6 +1,6 @@
 namespace PlanejamentoIntegrado.Services;
 
-public interface IMaterialProducedService
+public interface IMaterialConsumedService
 {
     Task<Dictionary<string, decimal>> GetConsumptionByWeek(
         string? concatenatedSegments,

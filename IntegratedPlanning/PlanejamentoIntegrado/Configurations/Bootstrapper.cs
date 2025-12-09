@@ -26,7 +26,7 @@ public static class Bootstrapper
         services.AddScoped<ISupplierService, SupplierService>();
         services.AddScoped<IStockItemService, StockItemService>();
         services.AddScoped<IScheduleService, ScheduleService>();
-        services.AddScoped<IMaterialProducedService, MaterialProducedService>();
+        services.AddScoped<IMaterialConsumedService, MaterialConsumedService>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
         services

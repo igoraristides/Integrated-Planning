@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlanejamentoIntegrado.Models;
 
-[Table("VW_M2V_PI_MATERIAL_PRODUZIDO")]
-public class MaterialProduced
+[Table("VW_M2V_PI_MATERIAL_CONSUMIDO")]
+public class MaterialConsumed
 {
     [Key]
     [Column("TRANSACTION_ID")]
@@ -16,12 +16,12 @@ public class MaterialProduced
     [Column("CONCATENATED_SEGMENTS")]
     public string? ConcatenatedSegments { get; set; }
 
-    [Column("INVOICE_DATE")]
-    public DateTime? InvoiceDate { get; set; }
+    [Column("TRANSACTION_DATE")]
+    public DateTime? TransactionDate { get; set; }
 
     [Column("TRANSACTION_QUANTITY")]
     public decimal? TransactionQuantity { get; set; }
 
-    [Column("ORG_ID")]
-    public int? OrgId { get; set; }
+    [Column("ORGANIZATION_ID")]
+    public int? OrganizationId { get; set; }
 }

@@ -15,7 +15,7 @@ public class StockControllerTests : BaseTest
     private readonly Mock<ISupplierService> _mockSupplierService;
     private readonly Mock<IStockItemService> _mockStockItemService;
     private readonly Mock<IScheduleService> _mockScheduleService;
-    private readonly Mock<IMaterialProducedService> _mockMaterialProducedService;
+    private readonly Mock<IMaterialConsumedService> _mockMaterialConsumedService;
     private readonly StockController _controller;
 
     public StockControllerTests()
@@ -23,13 +23,13 @@ public class StockControllerTests : BaseTest
         _mockSupplierService = new Mock<ISupplierService>();
         _mockStockItemService = new Mock<IStockItemService>();
         _mockScheduleService = new Mock<IScheduleService>();
-        _mockMaterialProducedService = new Mock<IMaterialProducedService>();
+        _mockMaterialConsumedService = new Mock<IMaterialConsumedService>();
 
         _controller = new StockController(
             _mockSupplierService.Object,
             _mockStockItemService.Object,
             _mockScheduleService.Object,
-            _mockMaterialProducedService.Object
+            _mockMaterialConsumedService.Object
         );
 
         var user = new ClaimsPrincipal(
@@ -152,7 +152,7 @@ public class StockControllerTests : BaseTest
             )
             .ReturnsAsync(new List<ChartDataPoint>());
 
-        _mockMaterialProducedService
+        _mockMaterialConsumedService
             .Setup(x =>
                 x.GetConsumptionByWeek(
                     It.IsAny<string>(),
