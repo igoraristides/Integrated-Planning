@@ -176,18 +176,24 @@ public class ScheduleService(IRepository<Schedule> scheduleRepository) : ISchedu
         var matrixData = schedules
             .Where(s => s.StartDateTime.HasValue)
             .GroupBy(s => s.HeaderId)
-            .Select(g => new MatrixRow
+            .Select(g =>
             {
-                OriginName =
-                    $"{g.Key} - {g.FirstOrDefault()?.CreatedAt?.ToString("dd/MM/yyyy") ?? ""}",
-                WeekValues = g.GroupBy(s => GetISOWeekNumber(s.StartDateTime!.Value))
+                var weekValues = g.GroupBy(s => GetISOWeekNumber(s.StartDateTime!.Value))
                     .ToDictionary(
                         wg => wg.Key,
                         wg => (decimal?)wg.Sum(s => s.ItemDetailQuantity ?? 0)
-                    ),
-                Total = g.Sum(s => s.ItemDetailQuantity ?? 0),
-                CV = CalculateCV(g.Select(s => s.ItemDetailQuantity ?? 0).ToList()),
-                CLCV = ClassifyCV(CalculateCV(g.Select(s => s.ItemDetailQuantity ?? 0).ToList())),
+                    );
+                var valuesForCv = weekValues.Values.Where(v => v.HasValue).Select(v => v!.Value).ToList();
+                var cv = CalculateCV(valuesForCv);
+                return new MatrixRow
+                {
+                    OriginName =
+                        $"{g.Key} - {g.FirstOrDefault()?.CreatedAt?.ToString("dd/MM/yyyy") ?? ""}",
+                    WeekValues = weekValues,
+                    Total = g.Sum(s => s.ItemDetailQuantity ?? 0),
+                    CV = cv,
+                    CLCV = ClassifyCV(cv),
+                };
             })
             .OrderBy(m => m.OriginName)
             .ToList();
@@ -215,20 +221,24 @@ public class ScheduleService(IRepository<Schedule> scheduleRepository) : ISchedu
         var matrixData = schedules
             .Where(s => s.StartDateTime.HasValue)
             .GroupBy(s => s.HeaderId)
-            .Select(g => new MatrixRow
+            .Select(g =>
             {
-                OriginName =
-                    $"{g.Key} - {g.FirstOrDefault()?.CreatedAt?.ToString("dd/MM/yyyy") ?? ""}",
-                WeekValues = g.GroupBy(s => GetISOWeekNumber(s.StartDateTime!.Value))
+                var weekValues = g.GroupBy(s => GetISOWeekNumber(s.StartDateTime!.Value))
                     .ToDictionary(
                         wg => wg.Key,
                         wg => (decimal?)(wg.Sum(s => s.ItemDetailQuantity ?? 0) * unitValue)
-                    ),
-                Total = g.Sum(s => s.ItemDetailQuantity ?? 0) * unitValue,
-                CV = CalculateCV(g.Select(s => (s.ItemDetailQuantity ?? 0) * unitValue).ToList()),
-                CLCV = ClassifyCV(
-                    CalculateCV(g.Select(s => (s.ItemDetailQuantity ?? 0) * unitValue).ToList())
-                ),
+                    );
+                var valuesForCv = weekValues.Values.Where(v => v.HasValue).Select(v => v!.Value).ToList();
+                var cv = CalculateCV(valuesForCv);
+                return new MatrixRow
+                {
+                    OriginName =
+                        $"{g.Key} - {g.FirstOrDefault()?.CreatedAt?.ToString("dd/MM/yyyy") ?? ""}",
+                    WeekValues = weekValues,
+                    Total = g.Sum(s => s.ItemDetailQuantity ?? 0) * unitValue,
+                    CV = cv,
+                    CLCV = ClassifyCV(cv),
+                };
             })
             .OrderBy(m => m.OriginName)
             .ToList();
@@ -254,7 +264,8 @@ public class ScheduleService(IRepository<Schedule> scheduleRepository) : ISchedu
         if (values.Count == 0)
             return 0;
 
-        var mean = values.Average();
+        var total = values.Sum();
+        var mean = total / values.Count;
         if (mean == 0)
             return 0;
 
