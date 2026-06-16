@@ -15,4 +15,5 @@ public class UserViewModel
     public string? Password { get; set; }
     public UserProfile? ProfileId { get; set; }
     public bool? IsActive { get; set; }
+    public bool ReceivesEmail { get; set; }
 }

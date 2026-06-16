@@ -31,6 +31,9 @@ public class User
     /// <summary>IS_ACTIVE - Indica se o usuário está ativo (0=Inativo, 1=Ativo)</summary>
     public int? IsActive { get; set; }
 
+    /// <summary>RECEIVES_EMAIL - Indica se o usuário recebe e-mail (0=Não, 1=Sim)</summary>
+    public int? ReceivesEmail { get; set; }
+
     /// <summary>PROFILE_ID - Identificador do perfil de acesso do usuário</summary>
     public UserProfile? ProfileId { get; set; }
 

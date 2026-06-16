@@ -31,6 +31,8 @@ public class UserBuilder : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.IsActive).HasColumnName("IND_ACTIVE");
 
+        builder.Property(u => u.ReceivesEmail).HasColumnName("IND_RECEIVE_EMAIL");
+
         builder.Property(u => u.ProfileId).HasColumnName("USER_PROFILE_ID");
 
         builder.Property(u => u.CreatedAt).HasColumnName("CREATION_DATE").HasColumnType("DATE");

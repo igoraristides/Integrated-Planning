@@ -38,6 +38,7 @@
                     <th class="text-nowrap">Nome do Usuário</th>
                     <th class="text-nowrap">Acessos</th>
                     <th class="text-nowrap text-center">Ativo</th>
+                    <th class="text-nowrap text-center">Recebe E-mail</th>
                     <th class="text-nowrap text-center">Alterar</th>
                 </tr>
             </thead>
@@ -50,6 +51,16 @@
 
                         <td class="text-center">
                             @if (user.IsActive.HasValue && user.IsActive.Value == true)
+                            {
+                                <span class="fas fa-check text-success"></span>
+                            }
+                            else
+                            {
+                                <span class="fas fa-times text-danger"></span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            @if (user.ReceivesEmail)
                             {
                                 <span class="fas fa-check text-success"></span>
                             }
